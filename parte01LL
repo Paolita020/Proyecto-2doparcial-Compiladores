@@ -1,3 +1,4 @@
+//CODIGO PARA JAVA
 private static void parseQ() {
         if (position == input.length()) {
             return;
