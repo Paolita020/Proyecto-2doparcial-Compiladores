@@ -1,0 +1,40 @@
+private static void parseQ() {
+        if (position == input.length()) {
+            return;
+        }
+
+        parseD();
+        expect("from");
+        parseT();
+
+        if (input.startsWith("distinct", position)) {
+            position += "distinct".length();
+            parseP();
+        } else {
+            parseP();
+        }
+
+    }//Primer produccióon llamada Q, verifica que la consulta SQL que se manda tenga la palabra inicial "distinct"
+
+    private static void parseD() {
+
+        if (position == input.length()) {
+            return;
+        }
+
+        if (input.startsWith("select", position)) {
+            position += "select".length();
+        }
+        
+    }//Al igual que la pasada pero ahora con el nombre D, ahora verificamos que la consulta inicie con un "select" y vemos que esta relacacionada con la produccion pasada que es Q 
+
+    private static void parseP() {
+        if (position == input.length()) {
+            return;
+        }
+        if (input.startsWith("*", position)) {
+            position++;
+        } else {
+            parseA();
+        }
+    }//Finalmente tenemos la producción P, que nos ayuda al analisis de las columnas seleccionadas: Como opcion tenemos un asterisco "*" o la separación de columnas por comas.
