@@ -1,41 +1,48 @@
 //CODIGO PARA JAVA
-private static void parseQ() {
-        if (position == input.length()) {
+
+//Primer produccióon llamada Q, verifica que la consulta SQL que se manda tenga la palabra inicial "distinct"
+//Q -> select D from T
+
+  private void Q() {
+        match(TipoToken.SELECT);
+        D();
+        // match(TipoToken.FROM);
+        // T();
+    }
+
+//Al igual que la pasada pero ahora con el nombre D, ahora verificamos que la consulta inicie con un "select" y vemos que esta relacacionada con la produccion pasada que es Q 
+// D -> distinct P | P
+
+    private void D() {
+        if (hayErrores)
             return;
-        }
 
-        parseD();
-        expect("from");
-        parseT();
-
-        if (input.startsWith("distinct", position)) {
-            position += "distinct".length();
-            parseP();
+        if (preanalisis.tipo == TipoToken.DISTINCT) {
+            match(TipoToken.DISTINCT);
+            P();
+        } else if (preanalisis.tipo == TipoToken.ASTERISCO
+                || preanalisis.tipo == TipoToken.IDENTIFICADOR) {
+            P();
         } else {
-            parseP();
+            hayErrores = true;
+            System.out.println("Se esperaba 'distinct' or '*' or 'identificador'");
         }
+    }
 
-    }//Primer produccióon llamada Q, verifica que la consulta SQL que se manda tenga la palabra inicial "distinct"
 
-    private static void parseD() {
+ //Finalmente tenemos la producción P, que nos ayuda al analisis de las columnas seleccionadas: Como opcion tenemos un asterisco "*" o la separación de columnas por comas.
+ // P -> * | A
 
-        if (position == input.length()) {
+    private void P() {
+        if (hayErrores)
             return;
-        }
 
-        if (input.startsWith("select", position)) {
-            position += "select".length();
-        }
-        
-    }//Al igual que la pasada pero ahora con el nombre D, ahora verificamos que la consulta inicie con un "select" y vemos que esta relacacionada con la produccion pasada que es Q 
-
-    private static void parseP() {
-        if (position == input.length()) {
-            return;
-        }
-        if (input.startsWith("*", position)) {
-            position++;
+        if (preanalisis.tipo == TipoToken.ASTERISCO) {
+            match(TipoToken.ASTERISCO);
+        } else if (preanalisis.tipo == TipoToken.IDENTIFICADOR) {
+            A();
         } else {
-            parseA();
-        }
-    }//Finalmente tenemos la producción P, que nos ayuda al analisis de las columnas seleccionadas: Como opcion tenemos un asterisco "*" o la separación de columnas por comas.
+            hayErrores = true;
+            System.out.println("Se esperaba '*' or 'identificador'");
+        }
+    }
