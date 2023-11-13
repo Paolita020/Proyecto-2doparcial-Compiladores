@@ -4,13 +4,22 @@ public class AscendingParser {
     private Stack<String> stack;
     private List<String> input;
 
+
+    /*Esta es la función del constructor de la clase AscendingParser.
+    Recibe una lista de String como entrada, que representa los tokens de la cadena a analizar.
+    Inicializa la pila (stack) con el símbolo inicial Q y agrega el símbolo de fin de cadena $.*/
+
     public AscendingParser(List<String> input) {
         this.input = input;
         stack = new Stack<>();
         stack.push("$");
         stack.push("Q");
     }
-
+/*
+Utiliza un bucle mientras la pila no esté vacía. En cada iteración, verifica si el símbolo en la cima de la pila es un terminal o no terminal. 
+Si es un terminal, compara con el token actual de la entrada y realiza las acciones correspondientes.
+Si es un no terminal, llama a la función parseProduction() para expandir el no terminal.
+*/
     public boolean parse() {
         int i = 0;
         String currentToken = input.get(i);
@@ -37,7 +46,7 @@ public class AscendingParser {
 
         return true;
     }
-
+//Esta función lleva a cabo la expansión de un no terminal según las reglas de producción de la gramática. 
     private boolean parseProduction(String nonTerminal, String currentToken) {
         switch (nonTerminal) {
             case "Q":
@@ -130,10 +139,17 @@ public class AscendingParser {
         }
     }
 
+    /*
+    Esta función verifica si un símbolo es terminal o no. 
+    Comprueba si el primer carácter del símbolo es una letra mayúscula. 
+    Si es una letra mayúscula, se considera no terminal; de lo contrario, se considera terminal.
+    */
     private boolean isTerminal(String symbol) {
         return !Character.isUpperCase(symbol.charAt(0));
     }
 
+
+    
     public static void main(String[] args) {
         List<String> input = Arrays.asList("select", "distinct", "*", "from", "T");
         AscendingParser parser = new AscendingParser(input);
