@@ -39,8 +39,5 @@
 
         if (preanalisis.tipo == TipoToken.IDENTIFICADOR) {
             match(TipoToken.IDENTIFICADOR);
-        } else {
-            hayErrores = true;
-            System.out.println("Se esperaba un 'identificador'");
         }
     }
