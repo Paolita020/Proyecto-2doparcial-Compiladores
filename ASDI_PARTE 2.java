@@ -1,42 +1,22 @@
-// Creamos una lista de objetos para almacenar los elementos de la lista A
-List<Object> listaA = new ArrayList<>();
-listaA.add("A1");
-listaA.add("A2");
+        //A1 -> ,A ! Ɛ
+        tablaAS.put("A1", new HashMap<>()); //Se crea se crea una nueva entrada en el mapa tablaAS utilizando el no terminal "A1" como clave.
+        tablaAS.get("A1").put(TipoToken.COMA, Arrays.asList(TipoToken.COMA, "A")); 
+        /*se obtiene el valor asociado a la clave "A1" en el mapa tablaAS, que es un objeto HashMap.
+        Luego, se llama al método put en ese objeto HashMap para agregar una nueva entrada.*/
+        tablaAS.get("A1").put(TipoToken.FROM, Arrays.asList());
+        tablaAS.get("A1").put(TipoToken.EOF, Arrays.asList());
 
-// Creamos un mapa para almacenar la información de la tabla AS
-// La clave es "A"
-TablaAS.put("A", new HashMap<TipoToken, List<Object>>() {{
-    put(TipoToken.IDENTIFICADOR, listaA);
-}});
-//Creamos una lista de objetos para almacenar los elementos de la lista A1
-List<Object> listaEpsilon = new ArrayList<>();
-List<Object> listaA1 = new ArrayList<>();
-listaA1.add("A");
-listaA1.add(TipoToken.COMA);
-//Cramos un mapa para almacenar la informacion de la tabla AS
-//La clave es A1
-TablaAS.put("A1", new HashMap<TipoToken,List<Object>>(){{
-put(TipoToken.COMA, listaA1);
-put(TipoToken.FROM, listaEpsilon);
-}});
-// Creamos una lista de objetos para almacenar los elementos de la lista A2
-List<Object> listaA2 = new ArrayList<>();
-listaA2.add("A3");
-listaA2.add(TipoToken.IDENTIFICADOR);
+        //A2 -> idA3
+        tablaAS.put("A2", new HashMap<>());//Se crea se crea una nueva entrada en el mapa tablaAS utilizando el no terminal "A2" como clave.
+         /*se obtiene el valor asociado a la clave "A2" en el mapa tablaAS, que es un objeto HashMap.
+        Luego, se llama al método put en ese objeto HashMap para agregar una nueva entrada.*/
+        tablaAS.get("A2").put(TipoToken.IDENTIFICADOR, Arrays.asList(TipoToken.IDENTIFICADOR, "A3"));
 
-// Añadimos la lista A2 al mapa TablaAS con clave "A2" 
-TablaAS.put("A2", new HashMap<TipoToken, List<Object>>() {{
-    put(TipoToken.IDENTIFICADOR, listaA2);
-}});
-
-// Creamos una lista de objetos para almacenar los elementos de la lista A3
-List<Object> listaA3 = new ArrayList<>();
-listaA3.add(TipoToken.IDENTIFICADOR);
-listaA3.add(TipoToken.PUNTO);
-
-// Añadimos la lista A3 al mapa TablaAS con clave "A3" 
-TablaAS.put("A3", new HashMap<TipoToken, List<Object>>() {{
-    put(TipoToken.FROM, listaEpsilon);
-    put(TipoToken.COMA, listaEpsilon);
-    put(TipoToken.PUNTO, listaA3);
-}});
+        //A3 -> .id | Ɛ
+        tablaAS.put("A3", new HashMap<>());//Se crea se crea una nueva entrada en el mapa tablaAS utilizando el no terminal "A3" como clave.
+         /*se obtiene el valor asociado a la clave "A3" en el mapa tablaAS, que es un objeto HashMap.
+        Luego, se llama al método put en ese objeto HashMap para agregar una nueva entrada.*/
+        tablaAS.get("A3").put(TipoToken.COMA, Arrays.asList(TipoToken.PUNTO, TipoToken.IDENTIFICADOR));
+        tablaAS.get("A3").put(TipoToken.FROM, Arrays.asList());
+        tablaAS.get("A3").put(TipoToken.COMA, Arrays.asList());
+        tablaAS.get("A3").put(TipoToken.EOF, Arrays.asList());
