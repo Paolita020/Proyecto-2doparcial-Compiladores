@@ -1,49 +1,24 @@
-// Crear una lista vacía llamada listaT
-List<Object> listaT = new ArrayList<>();
+        /*
+        Se crean una entrada en el mapa tablaAS para el no terminal correspondiente 
+        y asocian la regla de producción correspondiente a ese no terminal y al terminal TipoToken.
+            */
 
-// Agregar elementos a la listaT
-listaT.add("T1");
-listaT.add("T2");
+        //T -> T2T1
+        tablaAS.put("T", new HashMap<>()); 
+        tablaAS.get("T").put(TipoToken.IDENTIFICADOR, Arrays.asList("T2","T1"));
 
-// Crear un nuevo mapa y agregar la listaT al mapa con la clave TipoToken.IDENTIFICADOR
-TablaAS.put("T", new HashMap<TipoToken, List<Object>>() {{
-    put(TipoToken.IDENTIFICADOR, listaT);
-}});
+        //T1 -> ,T | Ɛ
+        tablaAS.put("T1", new HashMap<>());
+        tablaAS.get("T1").put(TipoToken.COMA, Arrays.asList(TipoToken.COMA, "T"));
+        tablaAS.get("T1").put(TipoToken.EOF, Arrays.asList());
 
-// Crear una lista vacía llamada listaT1
-List<Object> listaT1 = new ArrayList<>();
+        //T2 -> idT3
+        tablaAS.put("T2", new HashMap<>());
+        tablaAS.get("T2").put(TipoToken.IDENTIFICADOR, Arrays.asList(TipoToken.IDENTIFICADOR, "T3"));
+        tablaAS.get("T2").put(TipoToken.EOF, Arrays.asList());
 
-// Agregar elementos a la listaT1
-listaT1.add("T");
-listaT1.add(TipoToken.COMA);
-
-// Agregar la listaT1 al mapa TablaAS con las claves TipoToken.COMA y TipoToken.EOF
-TablaAS.put("T1", new HashMap<TipoToken, List<Object>>() {{
-    put(TipoToken.COMA, listaT1);
-    put(TipoToken.EOF, listaEpsilon);
-}});
-
-// Crear una lista vacía llamada listaT2
-List<Object> listaT2 = new ArrayList<>();
-
-// Agregar elementos a la listaT2
-listaT2.add("T3");
-listaT2.add(TipoToken.IDENTIFICADOR);
-
-// Agregar la listaT2 al mapa TablaAS con la clave TipoToken.IDENTIFICADOR
-TablaAS.put("T2", new HashMap<TipoToken, List<Object>>() {{
-    put(TipoToken.IDENTIFICADOR, listaT2);
-}});
-
-// Crear una lista vacía llamada listaT3
-List<Object> listaT3 = new ArrayList<>();
-
-// Agregar el TipoToken.IDENTIFICADOR a la listaT3
-listaT3.add(TipoToken.IDENTIFICADOR);
-
-// Agregar la listaT3 al mapa TablaAS con las claves TipoToken.IDENTIFICADOR, TipoToken.COMA y TipoToken.EOF
-TablaAS.put("T3", new HashMap<TipoToken, List<Object>>() {{
-    put(TipoToken.IDENTIFICADOR, listaT3);
-    put(TipoToken.COMA, listaEpsilon);
-    put(TipoToken.EOF, listaEpsilon);
-}});
+        //T3 -> id | Ɛ
+        tablaAS.put("T3", new HashMap<>());
+        tablaAS.get("T3").put(TipoToken.IDENTIFICADOR, Arrays.asList(TipoToken.IDENTIFICADOR));
+        tablaAS.get("T3").put(TipoToken.COMA, Arrays.asList());
+        tablaAS.get("T3").put(TipoToken.EOF, Arrays.asList());
