@@ -8,7 +8,17 @@ listaA.add("A2");
 TablaAS.put("A", new HashMap<TipoToken, List<Object>>() {{
     put(TipoToken.IDENTIFICADOR, listaA);
 }});
-
+//Creamos una lista de objetos para almacenar los elementos de la lista A1
+List<Object> listaEpsilon = new ArrayList<>();
+List<Object> listaA1 = new ArrayList<>();
+listaA1.add("A");
+listaA1.add(TipoToken.COMA);
+//Cramos un mapa para almacenar la informacion de la tabla AS
+//La clave es A1
+TablaAS.put("A1", new HashMap<TipoToken,List<Object>>(){{
+put(TipoToken.COMA, listaA1);
+put(TipoToken.FROM, listaEpsilon);
+}});
 // Creamos una lista de objetos para almacenar los elementos de la lista A2
 List<Object> listaA2 = new ArrayList<>();
 listaA2.add("A3");
