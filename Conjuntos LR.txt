@@ -1,0 +1,32 @@
+Q-> SELECT D FROM T
+D-> DITINCT P | P
+P-> * | A
+A-> A, A1 | A1
+A1-> IDA2
+A2-> .ID | e
+T-> T,T1 | T1
+T1-> IDT2
+T2-> ID | e
+
+
+CONJUNTO PRIMERO 
+Conjunto Primero(Q) = {SELECT}
+Conjunto Primero(D) = {DISTINCT} ∪ Conjunto Primero(P) = {DISTINCT, *, ID}
+Conjunto Primero(P) = {*, ID}
+Conjunto Primero(A) = Conjunto Primero(A, A1) ∪ Conjunto Primero(A1) = {ID}
+Conjunto Primero(A1) = {ID}
+Conjunto Primero(A2) = {., ε}
+Conjunto Primero(T) = Conjunto Primero(T, T1) ∪ Conjunto Primero(T1) = {ID}
+Conjunto Primero(T1) = {ID}
+Conjunto Primero(T2) = {ID, ε
+
+CONJUNTO SIGUIENTE
+Conjutno Siguiente de Q: {$}
+Conjutno Siguiente de D: {FROM}
+Conjutno Siguiente de P: {FROM,,}
+Conjutno Siguiente de A: {FROM,,}
+Conjutno Siguiente de A1: {FROM,,}
+Conjutno Siguiente de A2: {FROM,,}
+Conjutno Siguiente de T: {FROM,,}
+Conjutno Siguiente de T1: {FROM,,}
+Conjutno Siguiente de T2: {FROM,,}
