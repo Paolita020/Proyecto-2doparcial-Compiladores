@@ -1,3 +1,4 @@
+//Tabla que analizará la entrada del lenguaje 
 HashMap<String, HashMap<TipoToken, List<Object>>> TablaAS = new HashMap<>();
         List<Object> listaQSelect = new ArrayList<>();
         listaQSelect.add("T");
@@ -8,7 +9,7 @@ HashMap<String, HashMap<TipoToken, List<Object>>> TablaAS = new HashMap<>();
         TablaAS.put("Q", new HashMap<TipoToken,List<Object>>(){{
             put(TipoToken.SELECT, listaQSelect);
         }});
-//Tabla que analizará la entrada del lenguaje 
+
 
 //las siguientes funciones, hablando de los "list" representan la gramatica para el no terminal x, cuando el token que se espera es de los tipos IDENTIFICADO, ASTERISCO, SELECT O DISTINCT
 List<Object> listaPId = new ArrayList<>();
