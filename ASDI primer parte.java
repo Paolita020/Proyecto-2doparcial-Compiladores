@@ -1,43 +1,36 @@
 //Tabla que analizará la entrada del lenguaje 
-HashMap<String, HashMap<TipoToken, List<Object>>> TablaAS = new HashMap<>();
-        List<Object> listaQSelect = new ArrayList<>();
-        listaQSelect.add("T");
-        listaQSelect.add(TipoToken.FROM);
-        listaQSelect.add("D");
-        listaQSelect.add(TipoToken.SELECT);
-      //Función que agrega la producción en este caso Q a la tabla de analisis para el token SELECT
-        TablaAS.put("Q", new HashMap<TipoToken,List<Object>>(){{
-            put(TipoToken.SELECT, listaQSelect);
-        }});
+    private Map<String, Map<TipoToken, List<Object >>> tablaAS;
 
+    public TAnalisis(){
+        tablaAS = new HashMap<>();
 
-//las siguientes funciones, hablando de los "list" representan la gramatica para el no terminal x, cuando el token que se espera es de los tipos IDENTIFICADO, ASTERISCO, SELECT O DISTINCT
-List<Object> listaPId = new ArrayList<>();
-        listaPId.add("A");
-        List<Object> listaPAsterisco = new ArrayList<>();
-        listaPAsterisco.add(TipoToken.ASTERISCO);
-      //Función que agrega la producción en este caso P a la tabla de analisis para los tokens IDENTIFICADOR Y ASTERISCO
-        TablaAS.put("P", new HashMap<TipoToken,List<Object>>(){{
-            put(TipoToken.IDENTIFICADOR, listaPId);
-            put(TipoToken.ASTERISCO, listaPAsterisco);
-        }});
-List<Object> listaD = new ArrayList<>();
-        listaD.add("P");
-       //Función que agrega la producción en este caso D a la tabla de analisis para los tokens DISTINCT, IDENTIFICADOR Y ASTERISCO
-        TablaAS.put("D", new HashMap<TipoToken,List<Object>>(){{
-            put(TipoToken.DISTINCT, listaD);
-            put(TipoToken.IDENTIFICADOR, listaD);
-            put(TipoToken.ASTERISCO, listaD);
-        }});
+        /*
+        Se crea un nuevo objeto HashMap vacío que se asigna como el valor del no terminal correspondiente como clave.
+        Se obtiene el valor asociado a la clave en el mapa tablaAS, que es un objeto HashMap. 
+        Luego, se llama al método put en ese objeto HashMap para agregar una nueva entrada.
+        */
 
-//Producción que indica la presencia de un epsilon en la sentencia
-List<Object> listaEpsilon = new ArrayList<>();
-        List<Object> listaA1 = new ArrayList<>();
-      //Las siguientes 2 lineas nos agregan, elementos de tipo a1 a la lista y nos indican que se puede esperar una coma despues del elemento, respectivamente
-        listaA1.add("A");
-        listaA1.add(TipoToken.COMA);
-       //Funcion que agrega la producción en este caso A1 a la tabla de analisis para los tokens COMA Y FROM
-        TablaAS.put("A1", new HashMap<TipoToken,List<Object>>(){{
-            put(TipoToken.COMA, listaA1);
-            put(TipoToken.FROM, listaEpsilon);
-        }});
+        //Q -> select D from T
+        tablaAS.put("Q", new HashMap<>()); 
+        tablaAS.get("Q").put(TipoToken.SELECT, Arrays.asList(TipoToken.SELECT, "D", TipoToken.FROM, "T"));
+
+        //D -> distinct P | P
+        tablaAS.put("D", new HashMap<>());
+        tablaAS.get("D").put(TipoToken.DISTINCT, Arrays.asList(TipoToken.DISTINCT, "P"));
+        tablaAS.get("D").put(TipoToken.ASTERISCO, Arrays.asList("P"));
+        tablaAS.get("D").put(TipoToken.IDENTIFICADOR, Arrays.asList("P"));
+
+        //P -> * | A
+        tablaAS.put("P", new HashMap<>());
+        tablaAS.get("P").put(TipoToken.ASTERISCO, Arrays.asList(TipoToken.ASTERISCO));
+        tablaAS.get("P").put(TipoToken.IDENTIFICADOR, Arrays.asList("A"));
+
+        //A -> A2A1 
+        tablaAS.put("A", new HashMap<>());
+        tablaAS.get("A").put(TipoToken.IDENTIFICADOR, Arrays.asList("A2", "A1"));
+
+        //A1 -> ,A ! Ɛ
+        tablaAS.put("A1", new HashMap<>());
+        tablaAS.get("A1").put(TipoToken.COMA, Arrays.asList(TipoToken.COMA, "A"));
+        tablaAS.get("A1").put(TipoToken.FROM, Arrays.asList());
+        tablaAS.get("A1").put(TipoToken.EOF, Arrays.asList());
