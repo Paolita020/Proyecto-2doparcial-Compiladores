@@ -28,9 +28,3 @@
         //A -> A2A1 
         tablaAS.put("A", new HashMap<>());
         tablaAS.get("A").put(TipoToken.IDENTIFICADOR, Arrays.asList("A2", "A1"));
-
-        //A1 -> ,A ! Ɛ
-        tablaAS.put("A1", new HashMap<>());
-        tablaAS.get("A1").put(TipoToken.COMA, Arrays.asList(TipoToken.COMA, "A"));
-        tablaAS.get("A1").put(TipoToken.FROM, Arrays.asList());
-        tablaAS.get("A1").put(TipoToken.EOF, Arrays.asList());
