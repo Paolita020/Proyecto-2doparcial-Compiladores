@@ -1,0 +1,37 @@
+Q -> SELECT D FROM T
+D -> DISTINCT P|P
+P -> *|A
+A -> A2A1
+A1 -> ,A|e
+A2 -> IDA3
+A3 -> .ID| e
+T -> T2T1
+T1 ->,T|e
+T2 -> IDT3
+T3 -> ID|e 
+
+CONJUNTO PRIMERO LL
+Conjunto Primero de Q: {SELECT}
+Conjunto Primero de D: {DISTINCT, *, ID}
+Conjunto Primero de P: {*, ID}
+Conjunto Primero de A: {ID}
+Conjunto Primero de A1: {',', e}
+Conjunto Primero de A2: {ID}
+Conjunto Primero de A3: {'.', e}
+Conjunto Primero de T: {ID}
+Conjunto Primero de T1: {',', e}
+Conjunto Primero de T2: {ID}
+Conjunto Primero de T3: {ID, e}
+
+CONJUNTO SIGUIENTE
+Conjutno Siguiente de Q: {$}
+Conjutno Siguiente de D: {FROM}
+Conjutno Siguiente de P: {FROM,,}
+Conjutno Siguiente de A: {FROM,,}
+Conjutno Siguiente de A1: {FROM,,}
+Conjutno Siguiente de A2: {FROM,,}
+Conjutno Siguiente de A3: {FROM,,}
+Conjutno Siguiente de T: {FROM,,}
+Conjutno Siguiente de T1: {FROM,,}
+Conjutno Siguiente de T2: {FROM,,}
+Conjutno Siguiente de T3: {FROM,,}
