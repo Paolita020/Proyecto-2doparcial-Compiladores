@@ -1,285 +1,123 @@
 import java.util.List;
 import java.util.Stack;
+import java.util.Arrays;
 
-public class ASA implements Parser {
-    private int c = 0;
-    private Token preanalisis;
-    private final List<Token> tokens;
-    private Stack<Integer> pila=new Stack();
+public class ASA implements Parser{
+
+    private int i = 0;
     private boolean hayErrores = false;
-    private boolean salir=false;
-    public ASA(List<Token> tokens) {
+    private final List<Token> tokens;
+    String [][] TablaAccionGoto  =                                                                                      //
+    { {"Estado",      "select",     "from",      "distinct",      "*",       ",",        "id",        ".",      "$",         "Q",     "D",     "P",     "A",      "A1",      "A2",      "A3",     "T",       "T1",      "T2",     "T3",    },
+      {     "0",        "s 1",      "",             "",           "",        "",          "",         "",       "",          "24",    "",      "",      "",       "",        "",        "",       "",        "",        "",       "",      },             
+      {     "1",         "",        "",             "s 3",        "s 5",     "",          "s 8",      "",       "",          "",      "2",     "4",     "6",      "",        "7",       "",       "",        "",        "",       "",      },
+      {     "2",         "",        "s 9",          "",           "",        "",          "",         "",       "",          "",      "",      "",      "",       "",        "",        "",       "",        "",        "",       "",      },  
+      {     "3",         "",        "",             "",           "s 5",     "",          "s 8",      "",       "",          "",      "",      "10",    "6",      "",        "7",       "",       "",        "",        "",       "",      }, 
+      {     "4",         "",        "r 2",          "",           "",        "",          "",         "",       "",          "",      "",      "",      "",       "",        "",        "",       "",        "",        "",       "",      },
+      {     "5",         "",        "r 3",          "",           "",        "",          "",         "",       "",          "",      "",      "",      "",       "",        "",        "",       "",        "",        "",       "",      },
+      {     "6",         "",        "r 3",          "",           "",        "",          "",         "",       "",          "",      "",      "",      "",       "",        "",        "",       "",        "",        "",       "",      },
+      {     "7",         "",        "r 7",          "",           "",       "s 12",       "",         "",       "",          "",      "",      "",      "",       "11",      "",        "",       "",        "",        "",       "",      },
+      {     "8",         "",        "r 10",         "",           "",       "r 10",       "",         "s 14",   "",          "",      "",      "",      "",       "",        "",        "13",     "",        "",        "",       "",      },
+      {     "9",         "",        "",             "",           "",        "",          "s 19",     "",       "",          "",      "",      "",      "",       "",        "",        "",       "15",      "",        "18",     "",      },
+      {     "10",        "",        "r 1",          "",           "",        "",          "",         "",       "",          "",      "",      "",      "",       "",        "",        "",       "",        "",        "",       "",      },             
+      {     "11",        "",        "r 5",          "",           "",        "",          "",         "",       "",          "",      "",      "",      "",       "",        "",        "",       "",        "",        "",       "",      },
+      {     "12",        "",        "",             "",           "",        "",          "s 8",      "",       "",          "",      "",      "",      "16",     "",        "7",       "",       "",        "",        "",       "",      },  
+      {     "13",        "",        "r 8",          "",           "",        "r 8",       "",         "",       "",          "",      "",      "",      "",       "",        "",        "",       "",        "",        "",       "",      }, 
+      {     "14",        "",        "",             "",           "",        "",          "s 17",     "",       "",          "",      "",      "",      "",       "",        "",        "",       "",        "",        "",       "",      },
+      {     "15",        "",        "",             "",           "",        "",          "",         "",       "r 0",       "",      "",      "",      "",       "",        "",        "",       "",        "",        "",       "",      },
+      {     "16",        "",        "r 6",          "",           "",        "",          "",         "",       "",          "",      "",      "",      "",       "",        "",        "",       "",        "",        "",       "",      },
+      {     "17",        "",        "r 9",          "",           "",        "r 9",       "",         "",       "",          "",      "",      "",      "",       "",        "",        "",       "",        "",        "",       "",      },
+      {     "18",        "",        "",             "",           "",       "s 21",       "",         "",       "r 13",      "",      "",      "",      "",       "",        "",        "",       "",        "20",      "",       "",      },
+      {     "19",        "",        "",             "",           "",       "r 16",       "s 23",     "",       "r 16",      "",      "",      "",      "",       "",        "",        "",       "",        "",        "",       "22",    },
+      {     "20",        "",        "",             "",           "",        "",          "",         "",       "r 11",      "",      "",      "",      "",       "",        "",        "",       "",        "",        "",       "",      },             
+      {     "21",        "",        "",             "",           "",        "",         "s 19",      "",       "",          "",      "",      "",      "",       "",        "",        "",       "25",      "",        "18",     "",      },
+      {     "22",        "",        "",             "",           "",       "r 14",       "",         "",       "r 14",      "",      "",      "",      "",       "",        "",        "",       "",        "",        "",       "",      },  
+      {     "23",        "",        "",             "",           "",       "r 15",       "",         "",       "r 15",      "",      "",      "",      "",       "",        "",        "",       "",        "",        "",       "",      }, 
+      {     "24",        "",        "",             "",           "",        "",          "",         "",       "acc",       "",      "",      "",      "",       "",        "",        "",       "",        "",        "",       "",      },
+      {     "25",        "",        "",             "",           "",        "",          "",         "",       "r 12",      "",      "",      "",      "",       "",        "",        "",       "",        "",        "",       "",      }
+    };
+    String [][] Reducciones = 
+    { { "Q","4"  },
+      { "D","2"  },
+      { "D","1"  },
+      { "P","1"  },
+      { "P","1"  },
+      { "A","2"  },
+      { "A1","2" },
+      { "A1","0" },
+      { "A2","2" },
+      { "A3","2" },
+      { "A3","0" },
+      { "T","2"  },
+      { "T1","2" },
+      { "T1","0" },
+      { "T2","2" },
+      { "T3","1" },
+      { "T3","0" }
+    };   
+
+
+    public ASA(List<Token> tokens){
         this.tokens = tokens;
-        preanalisis=this.tokens.get(c);
-        this.pila.push(0);
     }
+
     @Override
     public boolean parse() {
-        do {
-            switch (pila.peek()) {
-                case 0:
-                    if (preanalisis.tipo == TipoToken.SELECT) {
-                        pila.push(2);
-                        c++;
-                        preanalisis = tokens.get(c);
-                    }
-                    else hayErrores=true;
-                break;
-                case 1:
-                    if (preanalisis.tipo == TipoToken.EOF) salir= true;
-                    break;
-                case 2:
-                    if (preanalisis.tipo == TipoToken.IDENTIFICADOR) {
-                        pila.push(9);
-                        c++;
-                        preanalisis = tokens.get(c);
-                    }
-                    else if (preanalisis.tipo == TipoToken.ASTERISCO) {
-                        pila.push(6);
-                        c++;
-                        preanalisis = tokens.get(c);
-                    }
-                    else if (preanalisis.tipo == TipoToken.DISTINCT) {
-                        pila.push(4);
-                        c++;
-                        preanalisis = tokens.get(c);
-                    }
-                    else hayErrores=true;
-                break;
-                case 3:
-                    if(preanalisis.tipo==TipoToken.FROM){
-                    pila.push(10);
-                    c++;
-                    preanalisis = tokens.get(c);
-                }else hayErrores=true;
-                    
-                break;
-                case 4:
-                    if (preanalisis.tipo == TipoToken.IDENTIFICADOR) pila.push(9);
-                    else if (preanalisis.tipo == TipoToken.ASTERISCO) pila.push(6);
-                    else hayErrores=true;
-                    c++;
-                    preanalisis = tokens.get(c);
-                break;
-                case 5://reduccion
-                    if(preanalisis.tipo==TipoToken.FROM) {
-                        pila.pop();
-                        if (pila.peek() == ) pila.push();
-                        else hayErrores = true;
-                    }
-                    else hayErrores=true;
-                break;
-                case 6:
-                    if(preanalisis.tipo==TipoToken.FROM) {
-                        pila.pop();
-                        if (pila.peek() == ) pila.push();
-                        //posiblemente quites la de abajo
-                        else if (pila.peek() == ) pila.push();
-                        else hayErrores= true;
-                    }
-                    else hayErrores=true;
-                break;
-                case 7:
-                    if(preanalisis.tipo==TipoToken.FROM) {
-                        pila.pop();
-                        if (pila.peek() == ) pila.push();
-                    }
-                    else hayErrores=true;
-                break;
-                case 8:
-                    if(preanalisis.tipo==TipoToken.COMA) {
-                        pila.push(13);
-                        c++;
-                        preanalisis=tokens.get(c);
-                    }else if(preanalisis.tipo==TipoToken.FROM){
-                        pila.pop();
-                        if (pila.peek() ==  || pila.peek()==) pila.push();
-                        else hayErrores= true;
-                    }
-                    else hayErrores=true;
-                break;
-                case 9:
-                    if(preanalisis.tipo==TipoToken.PUNTO) {
-                        pila.push(15);
-                        c++;
-                        preanalisis = tokens.get(c);
-                    }
-                    else if(preanalisis.tipo==TipoToken.COMA||preanalisis.tipo==TipoToken.FROM){
-                        pila.pop();
-                        if(pila.peek()==){
-                            pila.push();
-                        }
-                    }
-                    else hayErrores=true;
-                break;
-                case 10:
-                    if(preanalisis.tipo==TipoToken.IDENTIFICADOR) {
-                        pila.push(18);
-                        c++;
-                        preanalisis = tokens.get(c);
-                    }
-                    else hayErrores=true;
-                break;
-                case 11:
-                    if(preanalisis.tipo==TipoToken.FROM) {
-                        pila.pop();
-                        if(pila.peek()==){
-                            pila.push();
-                        }
-                    }//duda del siguiente condicional
-                    else if(preanalisis.tipo==TipoToken.EOF){
-                        pila.pop();
-                        pila.pop();
-                        pila.pop();
-                        pila.pop();
-                        if (pila.peek() == 0) pila.push(1);
-                        else hayErrores= true;
-                    }
-                    else hayErrores=true;
-                break;
-                case 12:
-                    if(preanalisis.tipo==TipoToken.FROM||preanalisis.tipo==TipoToken.EOF) {
-                        pila.pop();
-                        if (pila.peek() == ) pila.push();
-                        else hayErrores= true;
-                    }
-                    else hayErrores=true;
-                break;
-                case 13:
-                    if(preanalisis.tipo==TipoToken.IDENTIFICADOR) {
-                        pila.push(9);
-                        c++;
-                        preanalisis = tokens.get(c);
-                    }
-                    else hayErrores=true;
-                break;
-                case 14:
-                    if(preanalisis.tipo==TipoToken.COMA || preanalisis.tipo==TipoToken.FROM){
-                        pila.pop();
-                        if(pila.peek()==){
-                            pila.push();
-                        }else hayErrores=true;
-                    }else hayErrores=true;
-                    break;
-                case 15:
-                    if(preanalisis.tipo==TipoToken.IDENTIFICADOR) {
-                        pila.push(20);
-                        c++;
-                        preanalisis=tokens.get(c);
-                    }
-                    else hayErrores=true;
-                break;
-                case 16:
-                    if(preanalisis.tipo==TipoToken.EOF) {
-                        //pila.pop();
-                        pila.pop();
-                        if(pila.peek()== ){
-                            pila.push();
-                        }
-                        else hayErrores= true;
-                    }
-                    else hayErrores=true;
-                break;
-                case 17:
-                    if(preanalisis.tipo==TipoToken.COMA) {
-                        pila.push(22);
-                        c++;
-                        preanalisis=tokens.get(c);
-                    }
-                    else if(preanalisis.tipo==TipoToken.EOF){
-                        pila.pop();
-                        if(pila.peek()==){
-                            pila.push();
-                        }
-                        
-                    }hayErrores=true;
-                break;
-                case 18:
-                    if(preanalisis.tipo==TipoToken.IDENTIFICADOR){
-                        pila.push(24);
-                        c++;
-                        preanalisis=tokens.get(c);
-                    }else if(preanalisis.tipo==TipoToken.COMA || preanalisis.tipo==TipoToken.EOF) {
-                        pila.pop();
-                        pila.pop();
-                        if (pila.peek() == ) pila.push();
-                        else hayErrores= true;
-                    }
-                    else hayErrores=true;
-                break;
-                case 19:
-                    if(preanalisis.tipo==TipoToken.FROM) {
-                        pila.pop();
-                        pila.pop();
-                        if (pila.peek() == ||pila.peek() == ) pila.push();
-                        //chance quitas el condicional de abajo
-                        else if(pila.peek()==) pila.push();
-                        else hayErrores= true;
-                    }
-                    else hayErrores=true;
-                break;
-                case 20:
-                    if(preanalisis.tipo==TipoToken.COMA || preanalisis.tipo=TipoToken.FROM) {
-                        pila.pop();
-                        if(pila.peek()==){
-                            pila.push();
-                        }
-                    }
-                    else hayErrores=true;
-                break;
-                case 21:
-                    if(preanalisis.tipo==TipoToken.EOF) {
-                        //pila.pop();
-                        pila.pop();
-                        if (pila.peek() == ) pila.push();
-                        else hayErrores= true;
-                    }
-                    else hayErrores=true;
-                break;
-                case 22:
-                    if(preanalisis.tipo==TipoToken.IDENTIFICADOR) {
-                        pila.push(18);
-                        c++;
-                        preanalisis = tokens.get(c);
-                    }
-                    else hayErrores=true;
-                break;
-                case 23:
-                    if(preanalisis.tipo==TipoToken.COMA||preanalisis.tipo==TipoToken.EOF) {
-                        //pila.pop();
-                        //pila.pop();
-                        pila.pop();
-                        if (pila.peek() == ||pila.peek() == ) pila.push();
-                        else hayErrores= true;
-                    }
-                    else hayErrores= true;
-                break;
-                case 24:
-                    if(preanalisis.tipo==TipoToken.EOF || preanalisis.tipo==TipoToken.COMA){
-                        pila.pop():
-                        if(pila.peek()==){
-                            pila.push();
-                        }else hayErrores=true;
-                    }else hayErrores=true;
-                break;
-                case 25:
-                    if(preanalisis.tipo==TipoToken.EOF){
-                        pila.pop();
-                        if(pila.peek()==){
-                            pila.push();
-                        }else hayErrores=true;
-                    }else hayErrores=true;
 
+        String entrada = "";
+        //boolean terminado = false;
+        Stack <String> pila = new Stack <String>();
+
+        entrada = avanzarEntrada();
+        pila.push("0");
+        while(true){
+            String[] accion = TablaAccionGoto[buscaEstado(TablaAccionGoto, pila.peek() )][buscaColumna(TablaAccionGoto, entrada )].split(" ");
+            if ( accion[0].equals("s") ){
+            	pila.push(accion[1]);
+                entrada = avanzarEntrada();
+            }
+            else if(  accion[0].equals("r") ){
+            	for(int x=0;x<Integer.parseInt(Reducciones[Integer.parseInt(accion[1])][1]);x++){
+                	pila.pop();
+            	}
+                String goTo = TablaAccionGoto[buscaEstado(TablaAccionGoto, pila.peek() )][buscaColumna(TablaAccionGoto, Reducciones[Integer.parseInt(accion[1])][0] )];
+                pila.push(goTo);
+            }
+            else if( accion[0].equals("acc") ){
+                System.out.println("Consulta correcta");
+                return  true;
+            }else{
+                System.out.println("Si no sabe no le mueva pai");
+                return false;
             }
         }
-        while (!hayErrores && !salir);
-        if(hayErrores){
-            System.out.println("Consulta invalida");
-            return false;
+    }
+
+    private String avanzarEntrada(){
+    	String entradaBuffer;
+        if(tokens.get(i).tipo == TipoToken.IDENTIFICADOR )
+            entradaBuffer = "id";
+        else 
+            entradaBuffer = tokens.get(i).lexema;
+       	i++;
+       	return entradaBuffer;
+    }
+
+    private int buscaEstado(String tablaAccionGoto [][], String estado){
+        int l = tablaAccionGoto.length;
+        for(int i=1;i<l;i++){
+            if(tablaAccionGoto[i][0].equals(estado) )
+                return i;
         }
-        else{
-            System.out.println("Consulta correcta");
-            return true;
+        return -10;
+    }
+
+    private int buscaColumna(String tablaAccionGoto [][], String columna){
+        int l = tablaAccionGoto[0].length;
+        for(int i=1;i<l;i++){
+            if(tablaAccionGoto[0][i].equals(columna) )
+                return i;
         }
+        return -1;
     }
 }
